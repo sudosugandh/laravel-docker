@@ -23,8 +23,8 @@ chmod -R 775 storage bootstrap/cache
 php artisan cache:clear
 php artisan config:cache
 
-# Restart your web server, e.g., if you're using Nginx or Apache
-# systemctl restart nginx
+# Restart Apache
+sudo systemctl restart apache2
 
 # If everything is successful, set the deployment success flag
 if [ $? -eq 0 ]; then
@@ -32,4 +32,5 @@ if [ $? -eq 0 ]; then
   exit 0
 else
   echo "Deployment failed"
-  exi
+  exit 1
+fi
