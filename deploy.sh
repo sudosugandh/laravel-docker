@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to your Laravel project directory
-cd /var/www/html/test-action
+cd /var/www/html/laravel-docker
 
 # Activate a virtual environment, if applicable
 
@@ -15,6 +15,14 @@ composer install --no-dev --no-interaction --prefer-dist
 php artisan migrate --force
 # Any other necessary deployment tasks
 
+# Set permissions for Laravel storage and cache directories
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# Clear Laravel cache
+php artisan cache:clear
+php artisan config:cache
+
 # Restart your web server, e.g., if you're using Nginx or Apache
 # systemctl restart nginx
 
@@ -24,5 +32,4 @@ if [ $? -eq 0 ]; then
   exit 0
 else
   echo "Deployment failed"
-  exit 1
-fi
+  exi
