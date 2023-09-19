@@ -45,6 +45,10 @@ php artisan config:cache
 # Restart Apache (you can adjust this based on your web server)
 sudo systemctl restart apache2
 
+# Fix permissions for log files
+chown -R www-data:www-data storage/logs
+chmod -R 775 storage/logs
+
 # If everything is successful, set the deployment success flag
 echo "Deployment successful"
 exit 0
