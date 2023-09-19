@@ -47,9 +47,12 @@ jobs:
           script: |
             cd /var/www/html/laravel-docker
             echo "Current PATH: $PATH"
+            
             # Run your deployment script here
+            ./deploy.sh
+            
             # If deployment is successful, set the output variable to 'true', otherwise 'false'
-            if [deployment succeeds condition]; then
+            if [ $? -eq 0 ]; then
               echo "::set-output name=deployment-successful::true"
             else
               echo "::set-output name=deployment-successful::false"
@@ -57,7 +60,7 @@ jobs:
         env:
           SSH_AUTH_SOCK: /dev/null
 
-      - name: Disable Maintenance Mode on Server 1 and Run Deploy Script
+      - name: Disable Maintenance Mode on Server 1 and Rollback on Deployment Failure
         if: steps.deploy.outputs.deployment-successful == 'false'
         uses: appleboy/ssh-action@master
         with:
@@ -70,5 +73,8 @@ jobs:
             echo "Current PATH: $PATH"
             php -v
             php artisan up
+            
+            # Rollback deployment on Server 2 (optional)
+            sshpass -p "${{ secrets.SERVER2_PASSWORD }}" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -p 22 "${{ secrets.SERVER2_USERNAME }}@${{ secrets.SERVER2_HOST }}" "cd /var/www/html/laravel-docker && ./rollback.sh"
         env:
           SSH_AUTH_SOCK: /dev/null
