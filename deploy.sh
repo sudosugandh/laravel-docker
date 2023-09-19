@@ -35,16 +35,19 @@ php artisan migrate --force
 check_success
 
 # Set permissions for Laravel storage and cache directories
-sudo chown -R www-data:www-data storage bootstrap/cache
-sudo chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+chmod -R 775 storage bootstrap/cache
+
+# Ensure the storage/logs directory exists
+mkdir -p storage/logs
+
+# Fix permissions for log files
+chown -R www-data:www-data storage/logs
+chmod -R 775 storage/logs
 
 # Clear Laravel cache
 php artisan cache:clear
 php artisan config:cache
-
-# Fix permissions for log files
-sudo chown -R www-data:www-data storage/logs
-sudo chmod -R 775 storage/logs
 
 # Restart Apache (you can adjust this based on your web server)
 sudo systemctl restart apache2
